@@ -1,21 +1,11 @@
-This is a fork of the JDKSMidi library by J.D. Koftinoff and other authors.
-The main changes are the development of the class AdvancedSequencer, an all-in-one object capable to load and play
-MIDI files with a single call to a class method.
-There are other features, and even improvements to the class MIDIDriver. These are shown in two new test programs,
-one of them for Windows (see the examples in the \examples\win32 folder).
-Currently the driver is only effective for Windows, but ALSA drivers have been developed by Palem Gopalakrishna and
-could be integrated soon
-Nicola Cassetta
-
-/////// ORIGINAL README //////////////////////////////////////
 
 J.D. Koftinoff Software, Ltd's C++ MIDI Library Source Code
 web: www.jdkoftinoff.com
 email: jeffk@jdkoftinoff.com
 
-Released under the GPL (GNU PUBLIC LICENSE): Apr 27, 2004
+Released under the BSD 2 clause license, Dec 15, 2013.
 
-For details of the GPL please see the file:
+For details of the BSD 2 clause license please see the file:
        COPYING
 
 
@@ -32,8 +22,9 @@ Supported Operating Systems
           other embedded systems, 16 bit, 32 bit, 64 bit.
           
 Supported Compilers:
-          GNU gcc 3.4,4.0 - 4.4
-          MSVC 6,7,8,9
+          GNU gcc
+          Clang
+          MSVC 
           Intel C++          
           
 This library was originally a collection of utility functions for MIDI written in C back in 1986 for the Atari ST computer. Since then it has evolved into a fairly powerful C++ MIDI Library including:
