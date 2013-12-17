@@ -38,17 +38,8 @@ static void FixQuotes ( char *s_ )
 */
 
 
-AdvancedSequencer::AdvancedSequencer(MIDISequencerGUIEventNotifier *n)
-#ifdef WIN32
-        :
-    driver( new MIDIDriverWin32() ),  /* NEW BY NC: queue_size given as default parameter */
-#else
-{
-    std:cerr << "Currentky only supported WIN32\n";
-    exit(EXIT_FAILURE);
-}
-#endif // WIN32
-
+AdvancedSequencer::AdvancedSequencer(MIDIDriver *driver_, MIDISequencerGUIEventNotifier *n)
+	: driver( driver_ ),
     notifier( n ),
     tracks ( 17 ),                      // TODO: allow more tracks!
     seq ( &tracks, notifier ),
@@ -63,13 +54,8 @@ AdvancedSequencer::AdvancedSequencer(MIDISequencerGUIEventNotifier *n)
     repeat_end_measure ( 0 ),
     repeat_play_mode ( false ),
     file_loaded ( false ),
-#ifdef WIN32
-    in_port ( MIDI_MAPPER ),
-    out_port ( MIDI_MAPPER )
-#else
     in_port ( 0 ),
     out_port ( 0 )
-#endif // WIN32
 
     // chain_mode ( false ) OLD (see header)
 
@@ -246,7 +232,7 @@ void AdvancedSequencer::GoToMeasure ( int measure, int beat )
     // figure out which warp item we use
     // try warp to the last warp point BEFORE the
     // requested measure
-    int warp_to_item = ( measure - 1 ) / MEASURES_PER_WARP;
+    unsigned int warp_to_item = ( measure - 1 ) / MEASURES_PER_WARP;
 
     if ( warp_to_item >= warp_positions.size() )
         warp_to_item = warp_positions.size() - 1;
@@ -323,7 +309,7 @@ void AdvancedSequencer::OutputMessage( MIDITimedBigMessage& msg ) {
             driver->OutputMessage( msg );
             return;
         }
-        jdks_wait( 1 ); /* note by NC: this may not be accurate, however waits for a minimum period */
+        driver->Sleep( 1 ); /* note by NC: this may not be accurate, however waits for a minimum period */
     }
     std::cerr << "OutputMessage failed!" << std::endl;
 }
@@ -466,7 +452,7 @@ unsigned long AdvancedSequencer::GetCurrentTimeInMs() const {
     }
     else
     {
-       return seq.GetCurrentTimeInMs();
+       return (unsigned long)seq.GetCurrentTimeInMs();
     }
 }
 
@@ -792,24 +778,19 @@ void AdvancedSequencer::SetMltChanged()
 
 bool AdvancedSequencer::OpenMIDI ( int in_port, int out_port, int timer_resolution )
 {
- #ifdef WIN32
-// TODO: (BY NC) this is a patch: it must be fixed with changes on class MIDIDriver;
-// we must eliminate every OS specific reference from this file
+     CloseMIDI();
 
-    CloseMIDI();
-
-    MIDIDriverWin32 *windriver = static_cast<MIDIDriverWin32*> ( driver );
-    if ( !windriver->StartTimer ( timer_resolution ) )
+    if ( !driver->StartTimer ( timer_resolution ) )
     {
         return false;
     }
 
     if ( in_port != -1 )
     {
-        windriver->OpenMIDIInPort ( in_port );
+        driver->OpenMIDIInPort ( in_port );
     }
 
-    if ( windriver->OpenMIDIOutPort ( out_port ) )
+    if ( driver->OpenMIDIOutPort ( out_port ) )
     {
         return true;
     }
@@ -818,25 +799,17 @@ bool AdvancedSequencer::OpenMIDI ( int in_port, int out_port, int timer_resoluti
     {
         return false;
     }
-#endif // WIN32
-
 }
 
 
 void AdvancedSequencer::CloseMIDI()
 {
-#ifdef WIN32
-// TODO: (BY NC) this is a patch: it must be fixed with changes on class MIDIDriver;
-// we must eliminate every OS specific reference from this file
-
-    MIDIDriverWin32 * windriver = static_cast<MIDIDriverWin32*> ( driver );
     Stop();
-    windriver->StopTimer();
-    windriver->AllNotesOff();
-    Sleep ( 100 );
-    windriver->CloseMIDIInPort();
-    windriver->CloseMIDIOutPort();
-#endif // WIN32
+    driver->StopTimer();
+    driver->AllNotesOff();
+    driver->Sleep ( 100 );
+    driver->CloseMIDIInPort();
+    driver->CloseMIDIOutPort();
 }
 
 
@@ -987,7 +960,7 @@ void AdvancedSequencer::CatchEventsBefore()
         if ( msg.IsSystemExclusive() )  // TODO: which SysEx should we send?
         {
             OutputMessage(msg);
-            Sleep(10);
+            driver->Sleep(10);
         }
         else
         {   // TODO: which other messages should we send???
@@ -1031,7 +1004,7 @@ void AdvancedSequencer::CatchEventsBefore(int trk) {
         if ( msg.IsSystemExclusive() )      // TODO: which SysEx should we send???
         {
             OutputMessage(msg);
-            Sleep(10);
+            driver->Sleep(10);
         }
         else
         {   // TODO: which other messages should we send???

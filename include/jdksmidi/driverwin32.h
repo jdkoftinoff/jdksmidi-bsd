@@ -19,10 +19,6 @@ inline unsigned long jdks_get_system_time_ms()
     return timeGetTime();
 }
 
-inline void jdks_wait( unsigned int ms )
-{
-    Sleep( ms );
-}
 
 ///
 /// This class inherits from pure virtual MIDISequencerGUIEventNotifier and it is a specialization of the class
@@ -115,25 +111,28 @@ public:
     virtual ~MIDIDriverWin32();
 
     /// Opens the MIDI in port _id_
-    bool OpenMIDIInPort ( int id );
+    virtual bool OpenMIDIInPort ( int id );
 
     /// Opens the MIDI out port _id_
-    bool OpenMIDIOutPort ( int id );
+    virtual bool OpenMIDIOutPort ( int id );
 
     /// Closes the open MIDI in port
-    void CloseMIDIInPort();
+    virtual void CloseMIDIInPort();
 
     /// Closes the open MIDI out port
-    void CloseMIDIOutPort();
+    virtual void CloseMIDIOutPort();
 
     /// Resets open MIDI out port
-    void ResetMIDIOut();
+    virtual void ResetMIDIOut();
 
     /// Start the hardware timer for playing MIDI. Default time resolution is 1 ms
-    bool StartTimer ( int resolution_ms = DEFAULT_TIMER_RESOLUTION );
+    virtual bool StartTimer ( int resolution_ms = DEFAULT_TIMER_RESOLUTION );
 
     /// Stops the hardware timer
-    void StopTimer();
+    virtual void StopTimer();
+
+	/// Use system's sleep method
+	virtual void Sleep(unsigned int ms);
 
     /// Sends the MIDITimedBigMessage _msg_ to the open MIDI out port
     bool HardwareMsgOut ( const MIDITimedBigMessage &msg );

@@ -12,12 +12,6 @@
 #include "jdksmidi/manager.h"
 #include "jdksmidi/driver.h"
 
-#ifdef WIN32
-#include "jdksmidi/driverwin32.h"
-#endif // WIN32
-
-
-
 #include <vector>
 
 // #define MAX_WARP_POSITIONS (128)
@@ -40,7 +34,6 @@ namespace jdksmidi
 /// The class is the union of many jdksmidi classes: a MIDISequencer (with its MIDIMultiTrack) for
 /// storing MIDI data, a MIDIDriver for communicating with hardware MIDI ports, a MIDIManager for
 /// handle sequencer playing, some MIDIProcessor for transposing, rechannelizing, etc.
-/// At currebt time, the class is only implemented for WIN32
 ///
 
 class AdvancedSequencer
@@ -50,7 +43,7 @@ public:
     // new by NC: the user can now set his own notifier (text, GUI, or no notifier ...)
 
     /// The constructor. You can specify a notifier for communicating with the GUI (this is not owned by the class)
-    AdvancedSequencer(MIDISequencerGUIEventNotifier *n = 0);
+    AdvancedSequencer(MIDIDriver *driver, MIDISequencerGUIEventNotifier *n = 0);
 
     /// The destructor frees all allocated memory (the notifier is not owned by the class)
     virtual ~AdvancedSequencer();
@@ -248,7 +241,8 @@ public:
      * a function GetUsedTracks()
      */
     {
-        return seq.GetNumTracks();
+//        return seq.GetNumTracks();
+		return tracks.GetNumTracks(); // @@ jay: can't we just do this?
     }
 
     /// Returns the number of measures of currently loaded song
@@ -341,7 +335,7 @@ protected:
     /// \param in_port, out_port the internal OS id number of the port; if the port is already open
     /// the function does nothing
     /// \param timer_resolution required by the OS, you can leave default
-    bool OpenMIDI ( int in_port, int out_port, int timer_resolution = MIDIDriverWin32::DEFAULT_TIMER_RESOLUTION );
+    bool OpenMIDI ( int in_port, int out_port, int timer_resolution = 1 );
 
     /// Closes the open MIDI ports
     void CloseMIDI();

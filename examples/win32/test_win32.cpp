@@ -1,6 +1,6 @@
 
 #include "test_win32.h"
-
+#include "jdksmidi\driverwin32.h"
 
 // Declare jdks objects
 static const UINT NotifierMessage = jdks_get_safe_system_msg_id();   // auto gets the msg id for the notifier
@@ -79,7 +79,7 @@ int WINAPI WinMain (HINSTANCE hThisInstance,
         hMainWin,                       // The window handle to which send messages
         NotifierMessage                 // The message id
         );
-    sequencer = new AdvancedSequencer( &notifier );
+    sequencer = new AdvancedSequencer( new MIDIDriverWin32(), &notifier );
 
     // Make the window visible on the screen
     ShowWindow (hMainWin, nCmdShow);

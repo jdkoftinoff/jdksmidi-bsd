@@ -38,6 +38,32 @@ public:
     /// The destructor frees the memory allocated for the MIDIQueue.\ Eventual MIDIProcessor pointer are not owned.
     virtual ~MIDIDriver();
 
+public: // abstracts
+    /// Opens the MIDI in port _id_
+    virtual bool OpenMIDIInPort ( int id ) = 0;
+
+    /// Opens the MIDI out port _id_
+    virtual bool OpenMIDIOutPort ( int id ) = 0;
+
+    /// Closes the open MIDI in port
+    virtual void CloseMIDIInPort() = 0;
+
+    /// Closes the open MIDI out port
+    virtual void CloseMIDIOutPort() = 0;
+
+    /// Resets open MIDI out port
+    virtual void ResetMIDIOut() = 0;
+
+    /// Start the hardware timer for playing MIDI. Default time resolution is 1 ms
+    virtual bool StartTimer ( int resolution_ms ) = 0;
+
+    /// Stops the hardware timer
+    virtual void StopTimer() = 0;
+
+	/// Use system's sleep method
+	virtual void Sleep(unsigned int ms) = 0;
+
+public:
     /// Empties the in and out MIDIQueue and the MIDIMatrix
     virtual void Reset();
 

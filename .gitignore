@@ -33,6 +33,10 @@ local.properties
 # PDT-specific
 .buildpath
 
+#################
+## Subversion
+#################
+.svn/
 
 #################
 ## Visual Studio

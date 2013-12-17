@@ -207,6 +207,11 @@ void MIDIDriverWin32::StopTimer()
     }
 }
 
+void MIDIDriverWin32::Sleep( unsigned int ms )
+{
+	::Sleep( ( DWORD ) ms );
+}
+
 bool MIDIDriverWin32::HardwareMsgOut ( const MIDITimedBigMessage &msg )
 {
     if ( out_open )
