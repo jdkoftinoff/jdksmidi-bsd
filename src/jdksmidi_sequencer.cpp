@@ -1110,9 +1110,12 @@ bool MIDISequencer::GetNextEvent ( int *tracknum, MIDITimedBigMessage *msg )
                          && state.Process ( msg ) )
                    )
                 {
-                    // the message is not allowed to come out!
-                    // erase it
-                    msg->SetNoOp();
+					if( !  msg->IsTempo() )
+					{
+						// the message is not allowed to come out!
+						// erase it
+						msg->SetNoOp();
+					}
                 }
 
                 // go to the next event on the multitrack

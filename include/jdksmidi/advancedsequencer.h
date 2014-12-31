@@ -105,6 +105,10 @@ public:
         return thru_transposer.GetTransposeChannel ( 0 );
     }
 
+	int GetMIDIFormat() const
+	{
+		return midiFormat;
+	}
     /// Loads a MIDI File into the sequencer. Returns *true* if loading was successful
     bool Load ( const char *fname );
 
@@ -151,6 +155,8 @@ public:
     /// \return *true* if the time _t_ is effectively reached, *false* otherwise (if _t_ is after
     /// the end of the song)
     void GoToTime ( MIDIClockTime t );
+
+    bool GoToTimeMs ( float time_ms );
 
     /// Starts MIDI playing from current time position.
     /// The notifier (if enabled) sends a GROUP_TRANSPORT_MODE to the GUI. During playback it will send
@@ -387,6 +393,8 @@ protected:
 
     // bool chain_mode; OLD
     // NOTE BY NC: I abandoned this feature, commenting every line referring to it
+
+	int midiFormat;
 };
 
 }

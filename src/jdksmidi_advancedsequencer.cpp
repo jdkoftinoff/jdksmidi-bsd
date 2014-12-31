@@ -55,7 +55,8 @@ AdvancedSequencer::AdvancedSequencer(MIDIDriver *driver_, MIDISequencerGUIEventN
     repeat_play_mode ( false ),
     file_loaded ( false ),
     in_port ( 0 ),
-    out_port ( 0 )
+    out_port ( 0 ),
+	midiFormat(-1)
 
     // chain_mode ( false ) OLD (see header)
 
@@ -139,6 +140,8 @@ bool AdvancedSequencer::Load ( const char *fname )
         // GoToMeasure ( 0 ); OLD: it used warp_positions, not even initialized!!! However,
         // this is already done by Reset();
         ExtractWarpPositions();
+
+		midiFormat = reader.GetFormat();
     }
 
     else
@@ -185,7 +188,7 @@ void AdvancedSequencer::GoToTime (MIDIClockTime t) {
     {
         return;
     }
-
+	
     // figure out which warp item we use
     // try warp to the last warp point BEFORE the
     // requested measure
@@ -221,6 +224,21 @@ void AdvancedSequencer::GoToTime (MIDIClockTime t) {
     }
 }
 
+bool AdvancedSequencer::GoToTimeMs(float time_ms)
+{
+	bool result = false;
+    if (mgr.IsSeqPlay())
+    {
+        Stop();
+        result = seq.GoToTimeMs(time_ms);
+        Play();
+    }
+    else
+    {
+        result = seq.GoToTimeMs(time_ms);
+    }
+	return result;
+}
 
 void AdvancedSequencer::GoToMeasure ( int measure, int beat )
 {
