@@ -292,6 +292,10 @@ bool MIDIDriverWin32::HardwareMsgOut ( const MIDITimedBigMessage &msg )
     return false;
 }
 
+void MIDIDriverWin32::SetMIDIOutVolume(DWORD dwVolume)
+{
+	midiOutSetVolume( out_handle, dwVolume );
+}
 
 // protected functions
 

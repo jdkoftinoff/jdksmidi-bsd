@@ -137,6 +137,9 @@ public:
     /// Sends the MIDITimedBigMessage _msg_ to the open MIDI out port
     bool HardwareMsgOut ( const MIDITimedBigMessage &msg );
 
+	void SetMIDIOutVolume(DWORD dwVolume);
+	/// sets the volume on the MIDI out port. See Microsoft's docs for midiOutSetVolume
+	
 /* NEW BY NC: now the driver keep track statically of the MIDI devices installed on the computer
  * these functions get them
  */
