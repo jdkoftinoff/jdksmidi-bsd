@@ -333,6 +333,9 @@ public:
  * to allow polimorphysm
  */
 
+public:
+	MIDISequencer& GetSequence() { return seq; }
+	
 protected:
     static const int MEASURES_PER_WARP = 4;
 
